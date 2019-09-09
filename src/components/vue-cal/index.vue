@@ -88,7 +88,7 @@
                         contenteditable
                         @blur="onEventTitleBlur($event, event)"
                         v-html="event.title")
-                      .vuecal__event-title(v-else-if="event.title" v-html="event.title")
+                      .vuecal__event-title(v-else-if="event.title" v-html="getEventTitle(event)")
                       .vuecal__event-time(v-if="(event.startTimeMinutes || event.endTimeMinutes) && !(view === 'month' && event.allDay && showAllDayEvents === 'short') && !isShortMonthView")
                         | {{ event.startTimeMinutes | formatTime(timeFormat || (twelveHour ? 'h:mm{am}' : 'HH:mm')) }}
                         span(v-if="event.endTimeMinutes") &nbsp;- {{ event.endTimeMinutes | formatTime(timeFormat || (twelveHour ? 'h:mm{am}' : 'HH:mm')) }}
@@ -405,6 +405,25 @@ export default {
       else if (['years', 'year'].includes(id) && events && this.eventsCountOnYearView) {
         this.view.events.push(...events.filter(e => eventInRange(e, startDate, endDate)))
       }
+    },
+
+    getEventTitle (event) {
+      let title = event.title
+
+      if (this.isShortMonthView && !event.allDay) {
+        if (this.eventsOnMonthView === 'medium') {
+          title = formatTime(event.startTimeMinutes, this.timeFormat || (this.twelveHour ? 'h:mm{am}' : 'HH:mm')) + ' ' + title
+        }
+        else if (this.eventsOnMonthView === 'long') {
+          title = formatTime(event.startTimeMinutes, this.timeFormat || (this.twelveHour ? 'h:mm{am}' : 'HH:mm')) +
+            ' - ' +
+            formatTime(event.endTimeMinutes, this.timeFormat || (this.twelveHour ? 'h:mm{am}' : 'HH:mm')) +
+            ' ' +
+            title
+        }
+      }
+
+      return title
     },
 
     findAncestor (el, Class) {
@@ -757,7 +776,11 @@ export default {
       return this.time && ['week', 'day'].includes(this.view.id)
     },
     isShortMonthView () {
-      return this.view.id === 'month' && this.eventsOnMonthView === 'short'
+      return this.view.id === 'month' && [
+        'short',
+        'medium',
+        'long'
+      ].indexOf(this.eventsOnMonthView) !== -1
     },
     // For week & day views.
     timeCells () {
@@ -970,7 +993,7 @@ export default {
         'vuecal--xsmall': this.xsmall,
         'vuecal--dragging-event': this.domEvents.resizeAnEvent.endTimeMinutes,
         'vuecal--events-on-month-view': this.eventsOnMonthView,
-        'vuecal--short-events': this.view.id === 'month' && this.eventsOnMonthView === 'short'
+        'vuecal--short-events': this.view.id === 'month' && ['short', 'medium', 'long'].indexOf(this.eventsOnMonthView) !== -1
       }
     }
   },

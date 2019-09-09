@@ -1358,8 +1358,8 @@
 
   v-btn.ma-1(small color="primary" @click="showAllDayEvents = (showAllDayEvents + 1) % 3")
     span.code :show-all-day-events="{{ ["'short'", 'true', 'false'][showAllDayEvents] }}"
-  v-btn.ma-1(small color="primary" @click="shortEventsOnMonthView = !shortEventsOnMonthView")
-    span.code :events-on-month-views="{{ ['true', "'short'"][shortEventsOnMonthView * 1] }}"
+  v-btn.ma-1(small color="primary" @click="shortEventsOnMonthView = (shortEventsOnMonthView + 1) % 4")
+    span.code :events-on-month-views="{{ ['true', "'short'", "'medium'", "'long'"][shortEventsOnMonthView] }}"
 
   v-card.my-2.ma-auto.main-content
     vue-cal.vuecal--green-theme.ex--all-day-events(
@@ -1368,14 +1368,14 @@
       :disable-views="['years', 'year']"
       hide-weekends
       :show-all-day-events="['short', true, false][showAllDayEvents]"
-      :events-on-month-view="[true, 'short'][shortEventsOnMonthView * 1]"
+      :events-on-month-view="[true, 'short', 'medium', 'long'][shortEventsOnMonthView]"
       :events="allDayEvents")
   sshpre(language="html-vue" label="Vue Template").
     &lt;button @click="showAllDayEvents = (showAllDayEvents + 1) % 3"&gt;
       :show-all-day-events="{{ "\{\{ [\"'short'\", 'true', 'false'][showAllDayEvents] \}\}" }}"
     &lt;/button&gt;
     &lt;button @click="shortEventsOnMonthView = !shortEventsOnMonthView"&gt;
-      :events-on-month-views="{{ "\{\{ ['true', \"'short'\"][shortEventsOnMonthView * 1] \}\}" }}"
+      :events-on-month-views="{{ "\{\{ ['true', \"'short'\", \"'medium'\", \"'long'\"][shortEventsOnMonthView] \}\}" }}"
     &lt;/button&gt;
 
     &lt;vue-cal selected-date="2019-02-11"
@@ -1383,7 +1383,7 @@
              :disable-views="['years', 'year']"
              hide-weekends
              :show-all-day-events="['short', true, false][showAllDayEvents]"
-             :events-on-month-view="[true, 'short'][shortEventsOnMonthView * 1]"
+             :events-on-month-view="[true, 'short', 'medium', 'long'][shortEventsOnMonthView]"
              :events="events"&gt;
     &lt;/vue-cal&gt;
   sshpre(language="js" label="Javascript").
